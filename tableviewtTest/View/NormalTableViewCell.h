@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<NormalTableViewCellDelegate>delegate;
 @property (nonatomic, strong)listModel *news;
-
+//- (void)layoutTableViewCellWithModel:(listModel *)model;
 
 @end
 

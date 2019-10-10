@@ -29,31 +29,18 @@
     [self.view addSubview:_tableView];
       _tableView.dataSource = self;
       _tableView.delegate = self;
-
     self.listload = [listLoader new];
-    [self.listload loadListData];
     
-    [self.tableView reloadData];
-    
-    [self.listload addObserver:self forKeyPath:@"dataSource" options:NSKeyValueObservingOptionNew context:nil];
+    __weak typeof (self) weakSelf = self;
+    [self.listload loadListDataWithlistLoaderFinichBlock:^(BOOL success, NSArray<listModel *> * _Nonnull dataArray) {
+        __strong typeof (weakSelf) strongSelf = weakSelf;
+        
+        strongSelf.dataSource = dataArray;
+        [strongSelf.tableView reloadData];
+    }];
     
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-
-    if ([keyPath isEqualToString:@"dataSource"]) {
-
-            _dataSource = change[@"new"];
-
-        NSLog(@"");
-
-    }
-//     [self.tableView reloadData];
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-    });
-
-}
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 100;
 }
@@ -76,13 +63,16 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NormalTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"id"];
-    listModel *model = self.dataSource[indexPath.row];
-    cell.news = model;
     if (!cell) {
         cell = [[NormalTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"id"];
 //        cell.delegate = self;
     }
+        listModel *model = self.dataSource[indexPath.row];
+        //方案一:重写cell.news的model的set方法进行传值
+        cell.news = model;
     
+         //方案二:写方法赋值调用
+//      [cell layoutTableViewCellWithModel:model];
    
     return cell;
 }
@@ -101,6 +91,6 @@
 //    }];
 //}
 - (void)dealloc{
-    [self.listload removeObserver:self forKeyPath:@"dataSource"];
+
 }
 @end

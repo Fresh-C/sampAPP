@@ -297,6 +297,7 @@
 /* Begin XCBuildConfiguration section */
 		6F9D0284231671E4001EE9C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5DBCE9B39BBFEAD3DF453D37 /* Pods-tableviewtTest.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -356,6 +357,7 @@
 		};
 		6F9D0285231671E4001EE9C8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5DBCE9B39BBFEAD3DF453D37 /* Pods-tableviewtTest.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

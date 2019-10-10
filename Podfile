@@ -2,7 +2,7 @@ platform :ios, '9.0'
 
 target 'tableviewtTest' do
  pod 'AFNetworking'
- pod 'YYModel'
+ pod 'YYModel', :inhibit_warnings => true
 end
 post_install do |installer|
   installer.pods_project.targets.each do |target|

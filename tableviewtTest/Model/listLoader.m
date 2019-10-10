@@ -14,25 +14,19 @@
 
 @interface listLoader ()
 
-@property (nonatomic, strong) NSArray *dataSource;
-
-
 @end
 @implementation listLoader
 
-- (void)loadListData {
+- (void)loadListDataWithlistLoaderFinichBlock:(listLoaderFinichBlock)finishBlock{
     
     NSArray <listModel *> *listData = [self readDataFromlocal];
 
     if (listData) {
-
-        self.dataSource = listData;
-
-        NSLog(@"");
+        finishBlock(YES,listData);
     }else{
-
+        
     NSString *urlStr = @"http://v.juhe.cn/toutiao/index?type=top&key=97ad001bfcc2082e2eeaf798bad3d54e";
-//
+    
 //    [[AFHTTPSessionManager manager] GET:urlStr parameters:nil progress:^(NSProgress *_Nonnull downloadProgress) {
 //    } success:^(NSURLSessionDataTask *_Nonnull task, id _Nullable responseObject) {
 //        NSLog(@"请求成功");
@@ -45,7 +39,6 @@
     __weak typeof(self) weakSelf = self;
     
     NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:listrequest completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
-        
         __strong typeof(weakSelf) strongSelf = weakSelf;
         
         NSError *jsonError;
@@ -54,10 +47,18 @@
         if ([jsonObjc[@"resultcode"] isEqual:@"112"]) {
             NSLog(@"超过后台限制的请求次数,啥也不会给你显示");
         } else {
-            NSArray *dataArray = jsonObjc[@"result"][@"data"];
-            strongSelf.dataSource = [NSArray yy_modelArrayWithClass:[listModel class] json:dataArray];
-            [strongSelf archivlistModelArray:self->_dataSource];
+            NSArray *dArray = jsonObjc[@"result"][@"data"];
+            NSArray *dataSource = [NSArray yy_modelArrayWithClass:[listModel class] json:dArray];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (finishBlock) {
+                    finishBlock(YES,dataSource);
+                }
+            });
+            
+            [strongSelf archivlistModelArray:dataSource];
         }
+      
     }];
 
     [dataTask resume];
